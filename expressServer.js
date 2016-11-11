@@ -40,10 +40,30 @@ app.get('/pets/:petIndex?', function(req,res){
     res.send(pets);
   }
   if(req.params.petIndex<0 || req.params.petIndex > pets.length){
-    res.send(404);
+    return res.sendStatus(404);
   }
   res.send(pets[petIndex]);
-}),
+});
+
+app.post('/pets', function(req,res){
+  var pet = req.body;
+  if(!pet){
+    return res.sendStatus(404);
+  }
+  pets.push(pet);
+  res.send(pet);
+});
+
+app.put('/pets/:petIndex', function(req,res){
+  var pet = req.body;
+  var petIndex = req.params.petIndex;
+  if(!req.params.petIndex || !pet || req.params.petIndex < 0 || req.params.petIndex > pets.length){
+    return res.sendStatus(404);
+  }
+  pets[petIndex]=pet;
+  res.send(pet);
+
+});
 
 // app.get('/search/:word/', function(req,res){
 //   var word = req.params.word;

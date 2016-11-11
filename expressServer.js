@@ -40,7 +40,7 @@ app.get('/pets/:petIndex?', function(req,res){
     res.send(pets);
   }
   if(req.params.petIndex<0 || req.params.petIndex > pets.length || Number.isNaN(req.params.petIndex)){
-    return res.sendStatus(404);
+    return res.sendStatus(400);
   }
   res.send(pets[petIndex]);
 });
@@ -48,7 +48,7 @@ app.get('/pets/:petIndex?', function(req,res){
 app.post('/pets', function(req,res){
   var pet = req.body;
   if(!pet || !req.body.age || !req.body.name || !req.body.kind){
-    return res.sendStatus(404);
+    return res.sendStatus(400);
   }
   pets.push(pet);
   res.send(pet);
@@ -58,7 +58,7 @@ app.put('/pets/:petIndex', function(req,res){
   var pet = req.body;
   var petIndex = req.params.petIndex;
   if(!req.params.petIndex || !pet || req.params.petIndex < 0 || req.params.petIndex > pets.length || Number.isNaN(req.params.petIndex)){
-    return res.sendStatus(404);
+    return res.sendStatus(400);
   }
   pets[petIndex]=pet;
   res.send(pet);
@@ -68,10 +68,34 @@ app.delete('/pets/:petIndex', function(req,res){
   var petIndex = Number.parseInt(req.params.petIndex);
 
   if(!req.params.petIndex || req.params.petIndex < 0 || req.params.petIndex > pets.length || Number.isNaN(petIndex)){
-    return res.sendStatus(404);
+    return res.sendStatus(400);
   }
   var pet = pets.splice(petIndex, 1)[0];
   res.send(pet);
+
+});
+
+app.patch('/pets/:petIndex', function(req,res){
+  var petIndex = Number.parseInt(req.params.petIndex);
+  var pet = req.body;
+
+  if(!req.params.petIndex || req.params.petIndex < 0 || req.params.petIndex > pets.length || Number.isNaN(petIndex)){
+    return res.sendStatus(400);
+  }
+  var petName = req.body.name;
+  var petAge = Number.parseInt(req.body.age);
+  var petKind = req.body.kind;
+
+  if(req.body.name){
+    pets[petIndex].name = petName;
+  }
+  if(req.body.age){
+    pets[petIndex].age = petAge;
+  }
+  if(req.body.kind){
+    pets[petIndex].kind = petKind;
+  }
+  res.send(pets[petIndex]);
 
 });
 

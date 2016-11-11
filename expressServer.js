@@ -39,7 +39,7 @@ app.get('/pets/:petIndex?', function(req,res){
     //IF STATEMENT DOESN'T WORK W/ IF(!PETINDEX).... WHY NOT??
     res.send(pets);
   }
-  if(req.params.petIndex<0 || req.params.petIndex > pets.length){
+  if(req.params.petIndex<0 || req.params.petIndex > pets.length || Number.isNaN(req.params.petIndex)){
     return res.sendStatus(404);
   }
   res.send(pets[petIndex]);
@@ -47,7 +47,7 @@ app.get('/pets/:petIndex?', function(req,res){
 
 app.post('/pets', function(req,res){
   var pet = req.body;
-  if(!pet){
+  if(!pet || !req.body.age || !req.body.name || !req.body.kind){
     return res.sendStatus(404);
   }
   pets.push(pet);
@@ -57,10 +57,20 @@ app.post('/pets', function(req,res){
 app.put('/pets/:petIndex', function(req,res){
   var pet = req.body;
   var petIndex = req.params.petIndex;
-  if(!req.params.petIndex || !pet || req.params.petIndex < 0 || req.params.petIndex > pets.length){
+  if(!req.params.petIndex || !pet || req.params.petIndex < 0 || req.params.petIndex > pets.length || Number.isNaN(req.params.petIndex)){
     return res.sendStatus(404);
   }
   pets[petIndex]=pet;
+  res.send(pet);
+});
+
+app.delete('/pets/:petIndex', function(req,res){
+  var petIndex = Number.parseInt(req.params.petIndex);
+
+  if(!req.params.petIndex || req.params.petIndex < 0 || req.params.petIndex > pets.length || Number.isNaN(petIndex)){
+    return res.sendStatus(404);
+  }
+  var pet = pets.splice(petIndex, 1)[0];
   res.send(pet);
 
 });
